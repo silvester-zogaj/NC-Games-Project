@@ -27,5 +27,20 @@ describe("GET - getCategories", () => {
     })
   });
 
+  describe('GET - endpoints.json', () => {
+    test('should return contents of endpoints.json file ', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response) => {
+            const {endpoints} = response.body
+            expect(endpoints.hasOwnProperty('GET /api')).toBe(true);
+            expect(endpoints.hasOwnProperty('GET /api/categories')).toBe(true)
+            expect(endpoints.hasOwnProperty('GET /api/reviews')).toBe(true)
+
+        })
+    });
+  });
+
 
 });
