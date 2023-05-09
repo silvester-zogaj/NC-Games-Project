@@ -19,7 +19,6 @@ describe("GET - getCategories", () => {
     .expect(200)
     .then((response)=> {
         const {categories} = response.body
-        console.log(categories)
         expect(categories.length).toBe(4);
         categories.forEach((category) => {
             expect(category.hasOwnProperty('slug')).toBe(true)

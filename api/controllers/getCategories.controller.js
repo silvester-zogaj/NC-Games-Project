@@ -5,4 +5,7 @@ exports.getCategories = (request, response) => {
     .then((categories) => {
       response.status(200).send({ categories });
     })
+    .catch((err)=> {
+        next(err)
+    })
 };
