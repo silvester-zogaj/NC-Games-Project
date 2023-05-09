@@ -7,3 +7,4 @@ module.exports = [
   { slug: 'dexterity', description: 'Games involving physical skill' },
   { slug: "children's games", description: 'Games suitable for children' }
 ];
+console.log
