@@ -1,7 +1,5 @@
-const {
-  selectCategories,
-  selectApi,
-} = require("../models/categories.model");
+const { selectCategories, selectApi } = require("../models/categories.model");
+const fs = require('fs/promises');
 
 exports.getCategories = (request, response) => {
   selectCategories()
@@ -14,8 +12,13 @@ exports.getCategories = (request, response) => {
 };
 
 exports.getApi = (request, response) => {
-  selectApi().then((endpoints) => {
-
-    response.status(200).send({endpoints});
-  });
+    return fs
+      .readFile(`endpoints.json`, "utf-8")
+      .then((data) => {
+        const parsedData = JSON.parse(data);
+        return parsedData;
+      })
+      .then((endpoints) => {
+        response.status(200).send({ endpoints });
+      });
 };
