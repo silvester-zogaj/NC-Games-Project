@@ -1,4 +1,4 @@
-const { selectCategories, selectApi } = require("../models/categories.model");
+const { selectCategories} = require("../models/categories.model");
 const fs = require('fs/promises');
 
 exports.getCategories = (request, response) => {
