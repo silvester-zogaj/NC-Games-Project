@@ -1,7 +1,7 @@
 const {
   selectCategories,
   selectApi,
-} = require("../models/selectCategories.model");
+} = require("../models/categories.model");
 
 exports.getCategories = (request, response) => {
   selectCategories()
@@ -13,9 +13,9 @@ exports.getCategories = (request, response) => {
     });
 };
 
-// exports.getApi = (request, response) => {
-//   selectApi().then((endpoints) => {
-//     console.log(endpoints);
-//     respond.status(200).send(endpoints);
-//   });
-// };
+exports.getApi = (request, response) => {
+  selectApi().then((endpoints) => {
+
+    response.status(200).send({endpoints});
+  });
+};
