@@ -1,4 +1,5 @@
 const db = require("../../db/connection");
+const fs = require('fs/promises');
 
 exports.selectCategories = () => {
     
@@ -11,4 +12,5 @@ exports.selectCategories = () => {
     .then((response) => {
         return response.rows
     });
-};
+}
+
