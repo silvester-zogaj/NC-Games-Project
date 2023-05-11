@@ -83,3 +83,21 @@ describe("/api/reviews/:review_id", () => {
       });
   });
 });
+
+// describe('/api/reviews/:review_id/comments', () => {
+//   test('Get - status: 200 - return an array of comments of the given review id', () => {
+//     return request(app)
+//     .get('/api/reviews/2/comments')
+//     .expect(200)
+//     .then ((response) => {
+//         const {comments} = response.body
+
+//         expect(comment.hasOwnProperty('comment_id')).toBe(true)
+//         expect(comment.hasOwnProperty('votes')).toBe(true)
+//         expect(comment.hasOwnProperty('created_at')).toBe(true)
+//         expect(comment.hasOwnProperty('author')).toBe(true)
+//         expect(comment.hasOwnProperty('body')).toBe(true)
+//         expect(comment.hasOwnProperty('review_id')).toBe(true)
+//     })
+//   });
+// });

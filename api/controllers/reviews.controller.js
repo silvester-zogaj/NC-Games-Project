@@ -9,3 +9,7 @@ exports.getReview = (request, response, next) => {
         next(err)
     })
 }
+
+exports.getReviewComments = (response, request, next ) => {
+  
+}
