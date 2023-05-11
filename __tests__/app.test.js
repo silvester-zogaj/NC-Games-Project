@@ -48,7 +48,7 @@ describe("/api/reviews/:review_id", () => {
       .expect(200)
       .then((response) => {
         // Arrange
-        const {review} = response.body
+        const { review } = response.body;
         // Assert
         expect(review.title).toBe("Agricola");
         expect(review.designer).toBe("Uwe Rosenberg");
@@ -70,7 +70,16 @@ describe("/api/reviews/:review_id", () => {
       .expect(404)
       .then((response) => {
         const { msg } = response.body;
-        expect(msg).toBe("review not found");
+        expect(msg).toBe("Review not found");
+      });
+  });
+  test("Get - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .get("/api/reviews/stuff")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
       });
   });
 });
