@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
 const jsonFileEndpoints = require("../endpoints.json");
+const jestSorted = require('jest-sorted');
 
 beforeEach(() => {
   return seed(data);
@@ -14,7 +15,7 @@ afterAll(() => {
 });
 
 describe("/api/categories", () => {
-  test("GET - status: 200 - responds with an array of category objects ", () => {
+  test("GET - status: 200 - responds with an array of category objects", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -83,3 +84,36 @@ describe("/api/reviews/:review_id", () => {
       });
   });
 });
+
+describe("/api/reviews", () => {
+  test("GET - status: 200 - responds with an array of category objects", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews.length).toBe(2);
+        reviews.forEach((review) => {
+          expect(review.hasOwnProperty("owner")).toBe(true);
+          expect(review.hasOwnProperty("title")).toBe(true);
+          expect(review.hasOwnProperty("review_id")).toBe(true);
+          expect(review.hasOwnProperty("category")).toBe(true);
+          expect(review.hasOwnProperty("review_img_url")).toBe(true);
+          expect(review.hasOwnProperty("created_at")).toBe(true);
+          expect(review.hasOwnProperty("votes")).toBe(true);
+          expect(review.hasOwnProperty("designer")).toBe(true);
+          expect(review.hasOwnProperty("comment_count")).toBe(true);
+          expect(review.hasOwnProperty("review_body")).toBe(false);
+        });
+      });
+  });
+  test('GET - status: 200 - responds with an array of category objects sorted in descending order', () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        const { reviews } = response.body;
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+}); 
