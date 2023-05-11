@@ -13,8 +13,8 @@ afterAll(() => {
   db.end();
 });
 
-describe("GET - getCategories", () => {
-  test("should return an array of category objects ", () => {
+describe("/api/categories", () => {
+  test("GET - status: 200 - responds with an array of category objects ", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
@@ -28,8 +28,8 @@ describe("GET - getCategories", () => {
       });
   });
 
-  describe("GET - endpoints.json", () => {
-    test("should return contents of endpoints.json file ", () => {
+  describe("/api", () => {
+    test("Get - status: 200 - responds with contents of endpoints.json file ", () => {
       return request(app)
         .get("/api")
         .expect(200)
@@ -38,5 +38,39 @@ describe("GET - getCategories", () => {
           expect(endpoints).toEqual(jsonFileEndpoints);
         });
     });
+  });
+});
+
+describe("/api/reviews/:review_id", () => {
+  test("Get - status: 200 - responds with the first review ", () => {
+    return request(app)
+      .get("/api/reviews/1")
+      .expect(200)
+      .then((response) => {
+        // Arrange
+        const {review} = response.body
+        // Assert
+        expect(review.title).toBe("Agricola");
+        expect(review.designer).toBe("Uwe Rosenberg");
+        expect(review.owner).toBe("mallionaire");
+        expect(review.review_img_url).toBe(
+          "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700"
+        );
+        expect(review.category).toBe("euro game");
+        expect(review.created_at).toBe(
+          JSON.parse(JSON.stringify(new Date(1610964020514)))
+        );
+        expect(review.votes).toBe(1);
+        expect(typeof review.review_id).toEqual("number");
+      });
+  });
+  test("Get - status: 404 - responds with review not found", () => {
+    return request(app)
+      .get("/api/reviews/300")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("review not found");
+      });
   });
 });
