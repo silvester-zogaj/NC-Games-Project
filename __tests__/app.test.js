@@ -92,7 +92,7 @@ describe("/api/reviews", () => {
       .expect(200)
       .then((response) => {
         const { reviews } = response.body;
-        expect(reviews.length).toBe(2);
+        expect(reviews.length).toBe(13);
         reviews.forEach((review) => {
           expect(review.hasOwnProperty("owner")).toBe(true);
           expect(review.hasOwnProperty("title")).toBe(true);
