@@ -12,7 +12,6 @@ app.get('/api', getApi)
 
 app.get('/api/reviews/:review_id', getReview)
 
-
 app.get('/api/reviews', getReviews)
 
 app.get('/api/reviews/:review_id/comments', getReviewComments )
