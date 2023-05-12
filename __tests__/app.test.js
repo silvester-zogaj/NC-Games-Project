@@ -141,7 +141,7 @@ describe("/api/reviews/:review_id/comments", () => {
           expect(comment.hasOwnProperty("created_at")).toBe(true);
           expect(comment.hasOwnProperty("author")).toBe(true);
           expect(comment.hasOwnProperty("body")).toBe(true);
-          expect(comment.hasOwnProperty("review_id")).toBe(true);
+          expect(comment.review_id).toBe(2)
 
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
