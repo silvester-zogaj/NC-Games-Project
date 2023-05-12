@@ -4,7 +4,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
 const jsonFileEndpoints = require("../endpoints.json");
-const jestSorted = require('jest-sorted');
+const jestSorted = require("jest-sorted");
 
 beforeEach(() => {
   return seed(data);
@@ -104,10 +104,19 @@ describe("/api/reviews", () => {
           expect(review.hasOwnProperty("designer")).toBe(true);
           expect(review.hasOwnProperty("comment_count")).toBe(true);
           expect(review.hasOwnProperty("review_body")).toBe(false);
+
+          expect(typeof review.owner).toBe("string");
+          expect(typeof review.title).toBe("string");
+          expect(typeof review.review_id).toBe("number");
+          expect(typeof review.category).toBe("string");
+          expect(typeof review.review_img_url).toBe("string");
+          expect(typeof review.created_at).toBe("string");
+          expect(typeof review.votes).toBe("number");
+          expect(typeof review.comment_count).toBe("string");
         });
       });
   });
-  test('GET - status: 200 - responds with an array of category objects sorted in descending order', () => {
+  test("GET - status: 200 - responds with an array of category objects sorted in descending order", () => {
     return request(app)
       .get("/api/reviews")
       .expect(200)
@@ -116,4 +125,67 @@ describe("/api/reviews", () => {
         expect(reviews).toBeSortedBy("created_at", { descending: true });
       });
   });
-}); 
+});
+
+describe("/api/reviews/:review_id/comments", () => {
+  test("Get - status: 200 - return an array of comments of the given review id", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments.length).toBe(3);
+        comments.forEach((comment) => {
+          expect(comment.hasOwnProperty("comment_id")).toBe(true);
+          expect(comment.hasOwnProperty("votes")).toBe(true);
+          expect(comment.hasOwnProperty("created_at")).toBe(true);
+          expect(comment.hasOwnProperty("author")).toBe(true);
+          expect(comment.hasOwnProperty("body")).toBe(true);
+          expect(comment.review_id).toBe(2)
+
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.review_id).toBe("number");
+        });
+      });
+  });
+  test("GET - status: 200 - responds with an array of category objects sorted in descending order", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET - status: 200 - responds with an empty array if review id exists but no comments are found", () => {
+    return request(app)
+      .get("/api/reviews/5/comments")
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments).toEqual([]);
+      });
+  });
+  test("Get - status: 404 - responds with review not found", () => {
+    return request(app)
+      .get("/api/reviews/20/comments")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Review not found");
+      });
+  });
+  test("Get - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .get("/api/reviews/stuff/comments")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
+      });
+  });
+});

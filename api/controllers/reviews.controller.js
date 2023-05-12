@@ -1,4 +1,4 @@
-const { selectReview, selectReviews } = require("../models/reviews.model");
+const { selectReview, selectReviews, selectReviewComments} = require("../models/reviews.model");
 
 exports.getReview = (request, response, next) => {
   const { review_id } = request.params;
@@ -19,4 +19,17 @@ exports.getReviews = (request, response, next) => {
     .catch((err) => {
       next(err);
     });
-};
+  };
+
+
+  
+  exports.getReviewComments = (request, response, next ) => {
+    const {review_id} = request.params;
+    selectReviewComments(review_id).then((comments) => {
+      response.status(200).send({comments})
+    })
+    .catch((err) => {
+      next(err)
+    })
+    
+  }
