@@ -141,7 +141,7 @@ describe("/api/reviews/:review_id/comments", () => {
           expect(comment.hasOwnProperty("created_at")).toBe(true);
           expect(comment.hasOwnProperty("author")).toBe(true);
           expect(comment.hasOwnProperty("body")).toBe(true);
-          expect(comment.review_id).toBe(2)
+          expect(comment.review_id).toBe(2);
 
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
@@ -187,5 +187,29 @@ describe("/api/reviews/:review_id/comments", () => {
         const { msg } = response.body;
         expect(msg).toBe("Invalid request");
       });
+  });
+});
+
+describe("/api/reviews/:review_id/", () => {
+  test("Patch - status: 200 - respond with updated review", () => {
+    return request(app)
+      .patch("/api/reviews/3")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then((response) => {
+        const {review} = response.body
+        expect(review).toEqual( {
+          title: 'Ultimate Werewolf',
+          designer: 'Akihisa Okui',
+          owner: 'bainesface',
+          review_img_url:
+            'https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700',
+          review_body: "We couldn't find the werewolf!",
+          category: 'social deduction',
+          created_at: JSON.parse(JSON.stringify(new Date(1610964101251))),
+          votes: 15,
+          review_id: 3,
+        })
+      })
   });
 });

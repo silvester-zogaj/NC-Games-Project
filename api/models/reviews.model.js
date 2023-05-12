@@ -49,3 +49,15 @@ exports.selectReviewComments = (review_id) => {
       }
     });
 };
+
+exports.updateReview = (review_id, newReview) => {
+  return db.query(
+    `
+    UPDATE reviews
+    SET votes = votes + $1
+    WHERE review_id = $2
+    RETURNING *;` , [newReview.inc_votes, review_id]
+  ).then((result) => {
+    return result.rows[0]
+  });
+};
