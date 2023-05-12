@@ -49,3 +49,24 @@ exports.selectReviewComments = (review_id) => {
       }
     });
 };
+
+exports.createReviewComment = (review_id, newComment) => {
+  const { username, body } = newComment;
+  return db
+    .query(
+      `INSERT INTO comments 
+       (review_id, author, body)
+        VALUES 
+        ($1, $2, $3)
+        returning *;
+  `,
+      [review_id,username, body]
+    )
+    .then((result) => {
+      console.log(result.rows)
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Review not found" });
+      }
+      return result.rows[0]
+    });
+};

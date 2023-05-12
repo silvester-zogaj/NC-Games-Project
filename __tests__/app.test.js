@@ -141,7 +141,7 @@ describe("/api/reviews/:review_id/comments", () => {
           expect(comment.hasOwnProperty("created_at")).toBe(true);
           expect(comment.hasOwnProperty("author")).toBe(true);
           expect(comment.hasOwnProperty("body")).toBe(true);
-          expect(comment.review_id).toBe(2)
+          expect(comment.review_id).toBe(2);
 
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
@@ -182,6 +182,43 @@ describe("/api/reviews/:review_id/comments", () => {
   test("Get - status: 400 - responds with invalid request", () => {
     return request(app)
       .get("/api/reviews/stuff/comments")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
+      });
+  });
+  test("Post - status: 201 - responds with the posted comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "Really great!" })
+      .expect(201)
+      .then((response) => {
+        const { comment } = response.body;
+        expect(comment).toEqual({
+          author: "mallionaire",
+          body: "Really great!",
+          comment_id: 7,
+          created_at: expect.any(String),
+          review_id: 1,
+          votes: 0,
+        });
+      });
+});
+  test("Post - status: 404 - responds with Username does not exist", () => {
+    return request(app)
+      .post("/api/reviews/100/comments")
+      .send({ username: "pepperoni", body: "Really great!" })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Username not found");
+      });
+  });
+  test("Post - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .post("/api/reviews/stuff/comments")
+      .send({ username: "mallionaire", body: "Really great!" })
       .expect(400)
       .then((response) => {
         const { msg } = response.body;
