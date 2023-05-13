@@ -28,7 +28,6 @@ app.post("/api/reviews/:review_id/comments", postReviewComment);
 
 
 app.use((err, request, response, next) => {
-//   console.log(err);
   if (err.code === "22P02") {
     response.status(400).send({ msg: "Invalid request" });
   } else {
@@ -36,6 +35,15 @@ app.use((err, request, response, next) => {
   }
 });
 
+
+
+app.use((err, request, response, next) => {
+  if (err.code === "23503") {
+    response.status(404).send({ msg: "Username not found" });
+  } else {
+    next(err);
+  }
+});
 
 app.use((err, request, response, next) => {
     if (err.status && err.msg) {
@@ -45,13 +53,6 @@ app.use((err, request, response, next) => {
     }
 });
 
-app.use((err, request, response, next) => {
-  if (err.code === "23503") {
-    response.status(404).send({ msg: "Username not found" });
-  } else {
-    next(err);
-  }
-});
 
 app.use((err, request, response, next) => {
   response.status(500).send({ msg: "Server error!" });
