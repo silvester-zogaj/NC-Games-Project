@@ -225,4 +225,14 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(msg).toBe("Invalid request");
       });
   });
+  test("Post - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .post("/api/reviews/stuff/comments")
+      .send({ username: "mallionaire", body: "Really great!" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
+      });
+  });
 });
