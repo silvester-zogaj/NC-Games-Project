@@ -141,7 +141,7 @@ describe("/api/reviews/:review_id/comments", () => {
           expect(comment.hasOwnProperty("created_at")).toBe(true);
           expect(comment.hasOwnProperty("author")).toBe(true);
           expect(comment.hasOwnProperty("body")).toBe(true);
-          expect(comment.review_id).toBe(2)
+          expect(comment.review_id).toBe(2);
 
           expect(typeof comment.comment_id).toBe("number");
           expect(typeof comment.votes).toBe("number");
@@ -186,6 +186,27 @@ describe("/api/reviews/:review_id/comments", () => {
       .then((response) => {
         const { msg } = response.body;
         expect(msg).toBe("Invalid request");
+      });
+  });
+});
+
+describe("/api/comments/:comment_id", () => {
+  test.only("Delete - status: 204 - responds with no content", () => {
+    return request(app)
+      .delete("/api/comments/6")
+      .expect(204)
+      .then((response) => {
+        console.log(response.body.result)
+        expect(response.body).toEqual({});
+      });
+  });
+  test("Delete - status: 404 - responds with comment not found", () => {
+    return request(app)
+      .delete("/api/comments/30")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe('Comment not found');
       });
   });
 });

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { getCategories , getApi} = require('./controllers/categories.controller')
-const {getReview, getReviews ,getReviewComments} = require('./controllers/reviews.controller')
+const {getReview, getReviews ,getReviewComments, deleteComment} = require('./controllers/reviews.controller')
 
 
 app.use(express.json());
@@ -14,16 +14,19 @@ app.get('/api/reviews/:review_id', getReview)
 
 app.get('/api/reviews', getReviews)
 
-app.get('/api/reviews/:review_id/comments', getReviewComments )
+app.get('/api/reviews/:review_id/comments', getReviewComments)
+
+app.delete('/api/comments/:comment_id', deleteComment)
 
 
 app.use((err, request, response, next) => {
+    console.log(err)
     if (err.code === '22P02') {
       response.status(400).send({ msg: 'Invalid request' });
     } else {
         next(err);
     }
-  });
+});
 
 app.use((err,request, response, next) => {
     if(err.status && err.msg) {
