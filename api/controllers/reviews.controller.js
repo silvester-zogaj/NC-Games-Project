@@ -39,4 +39,7 @@ exports.getReviews = (request, response, next) => {
     updateReview(review_id, request.body).then((review) => {
       response.status(200).send({review})
     })
+    .catch ((err) => {
+      next(err)
+    })
   }

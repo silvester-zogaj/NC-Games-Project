@@ -51,6 +51,9 @@ exports.selectReviewComments = (review_id) => {
 };
 
 exports.updateReview = (review_id, newReview) => {
+  if (typeof newReview.inc_votes !== 'number') {
+    return Promise.reject({status: 403, msg: 'Invalid format'})
+  }
   return db.query(
     `
     UPDATE reviews
@@ -58,6 +61,9 @@ exports.updateReview = (review_id, newReview) => {
     WHERE review_id = $2
     RETURNING *;` , [newReview.inc_votes, review_id]
   ).then((result) => {
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Review not found" });
+    }
     return result.rows[0]
   });
 };

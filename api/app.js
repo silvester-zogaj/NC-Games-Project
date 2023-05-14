@@ -20,6 +20,7 @@ app.patch('/api/reviews/:review_id', patchReview)
 
 
 app.use((err, request, response, next) => {
+    console.log(err)
     if (err.code === '22P02') {
       response.status(400).send({ msg: 'Invalid request' });
     } else {
