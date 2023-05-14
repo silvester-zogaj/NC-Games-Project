@@ -40,8 +40,9 @@ exports.getReviewComments = (request, response, next) => {
 exports.deleteComment = (request, response, next) => {
   const { comment_id } = request.params;
   removeComment(comment_id)
-    .then((result) => {
-      response.status(204).send({result});
+    .then(() => {
+      // console.log(comment)
+      response.status(204).send();
     })
     .catch((err) => {
       next(err);
