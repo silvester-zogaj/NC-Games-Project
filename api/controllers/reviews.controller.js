@@ -1,5 +1,11 @@
-
-const { selectReview, selectReviews, selectReviewComments, updateReview, createReviewComment} = require("../models/reviews.model");
+const {
+  selectReview,
+  selectReviews,
+  selectReviewComments,
+  updateReview, 
+  createReviewComment,
+  removeComment,
+} = require("../models/reviews.model");
 
 
 exports.getReview = (request, response, next) => {
@@ -34,11 +40,12 @@ exports.getReviewComments = (request, response, next) => {
     });
 };
 
+
 exports.postReviewComment = (request, response, next) => {
   const { review_id } = request.params;
   createReviewComment(review_id, request.body)
-    .then((comment) => {
-      response.status(201).send({ comment });
+  .then((comment) => {
+    response.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);
@@ -46,13 +53,26 @@ exports.postReviewComment = (request, response, next) => {
     };
 
     
+    
+    exports.patchReview = (request, response, next) => {
+      const {review_id} = request.params
+      updateReview(review_id, request.body).then((review) => {
+        response.status(200).send({review})
+      })
+      .catch ((err) => {
+        next(err)
+      })
+    }
 
-  exports.patchReview = (request, response, next) => {
-    const {review_id} = request.params
-    updateReview(review_id, request.body).then((review) => {
-      response.status(200).send({review})
-    })
-    .catch ((err) => {
-      next(err)
-    })
-  }
+    
+    exports.deleteComment = (request, response, next) => {
+      const { comment_id } = request.params;
+      removeComment(comment_id)
+        .then(() => {
+          // console.log(comment)
+          response.status(204).send();
+        })
+        .catch((err) => {
+          next(err);
+        });
+    };

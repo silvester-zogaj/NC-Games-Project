@@ -343,3 +343,32 @@ describe("/api/reviews/:review_id/", () => {
   });
 
 });
+
+describe("/api/comments/:comment_id", () => {
+  test("Delete - status: 204 - responds with no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+  test("Delete - status: 404 - responds with comment not found", () => {
+    return request(app)
+      .delete("/api/comments/10")
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Comment not found");
+      });
+  })
+  test("Delete - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .delete("/api/comments/things")
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
+      });
+  })
+});
