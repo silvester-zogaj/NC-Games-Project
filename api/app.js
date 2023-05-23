@@ -9,6 +9,7 @@ const {
   getReviews,
   getReviewComments,
   postReviewComment,
+  patchReview,
 } = require("./controllers/reviews.controller");
 
 app.use(express.json());
@@ -25,7 +26,7 @@ app.get("/api/reviews/:review_id/comments", getReviewComments);
 
 app.post("/api/reviews/:review_id/comments", postReviewComment);
 
-
+app.patch("/api/reviews/:review_id", patchReview);
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
@@ -34,7 +35,6 @@ app.use((err, request, response, next) => {
     next(err);
   }
 });
-
 
 app.use((err, request, response, next) => {
   if (err.code === "23503") {
@@ -45,13 +45,12 @@ app.use((err, request, response, next) => {
 });
 
 app.use((err, request, response, next) => {
-    if (err.status && err.msg) {
-        response.status(err.status).send({ msg: err.msg });
-    } else {
-        next(err);
-    }
+  if (err.status && err.msg) {
+    response.status(err.status).send({ msg: err.msg });
+  } else {
+    next(err);
+  }
 });
-
 
 app.use((err, request, response, next) => {
   response.status(500).send({ msg: "Server error!" });

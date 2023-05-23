@@ -1,9 +1,6 @@
-const {
-  selectReview,
-  selectReviews,
-  selectReviewComments,
-  createReviewComment,
-} = require("../models/reviews.model");
+
+const { selectReview, selectReviews, selectReviewComments, updateReview, createReviewComment} = require("../models/reviews.model");
+
 
 exports.getReview = (request, response, next) => {
   const { review_id } = request.params;
@@ -46,4 +43,16 @@ exports.postReviewComment = (request, response, next) => {
     .catch((err) => {
       next(err);
     });
-};
+    };
+
+    
+
+  exports.patchReview = (request, response, next) => {
+    const {review_id} = request.params
+    updateReview(review_id, request.body).then((review) => {
+      response.status(200).send({review})
+    })
+    .catch ((err) => {
+      next(err)
+    })
+  }
