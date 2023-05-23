@@ -50,6 +50,60 @@ exports.selectReviewComments = (review_id) => {
     });
 };
 
+exports.createReviewComment = (review_id, newComment) => {
+  const { username, body } = newComment;
+  if (body === "") {
+    return Promise.reject({ status: 404, msg: "Missing comment" });
+  }
+  if (!username || !body) {
+    return Promise.reject({ status: 404, msg: "Invalid properties" });
+  }
+
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Review not found" });
+      }
+    })
+    .then(() => {
+      return db
+        .query(
+          `INSERT INTO comments 
+(review_id, author, body)
+VALUES 
+($1, $2, $3)
+returning *;
+`,
+          [review_id, username, body]
+        )
+        .then((result) => {
+          return result.rows[0];
+        });
+    });
+};
+
+exports.updateReview = (review_id, newReview) => {
+  if (typeof newReview.inc_votes !== "number") {
+    return Promise.reject({ status: 403, msg: "Invalid format" });
+  }
+  return db
+    .query(
+      `
+    UPDATE reviews
+    SET votes = votes + $1
+    WHERE review_id = $2
+    RETURNING *;`,
+      [newReview.inc_votes, review_id]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Review not found" });
+      }
+      return result.rows[0];
+    });
+};
+
 exports.removeComment = (comment_id) => {
   return db
     .query(`SELECT * FROM comments WHERE comment_id = $1`, [comment_id])

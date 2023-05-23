@@ -188,6 +188,160 @@ describe("/api/reviews/:review_id/comments", () => {
         expect(msg).toBe("Invalid request");
       });
   });
+  test("Post - status: 201 - responds with the posted comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "Really great!" })
+      .expect(201)
+      .then((response) => {
+        const { comment } = response.body;
+        expect(comment).toEqual({
+          author: "mallionaire",
+          body: "Really great!",
+          comment_id: 7,
+          created_at: expect.any(String),
+          review_id: 1,
+          votes: 0,
+        });
+      });
+  });
+  test("Post - status: 400 - responds with review not found", () => {
+    return request(app)
+      .post("/api/reviews/50/comments")
+      .send({ username: "mallionaire", body: "Really great!" })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Review not found");
+      });
+  });
+  test("Post - status: 404 - responds with Username does not exist", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "pepperoni", body: "Really great!" })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Username not found");
+      });
+  });
+  test("Post - status: 404 - responds with invalid properties", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ random: "mallionaire", thing: "Really great!" })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid properties");
+      });
+  });
+  test("Post - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .post("/api/reviews/stuff/comments")
+      .send({ username: "mallionaire", body: "Really great!" })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
+      });
+  });
+  test("Post - status: 404 - responds with missing comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "" })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Missing comment");
+      });
+  });
+});
+
+describe("/api/reviews/:review_id/", () => {
+  test("Patch - status: 200 - respond with updated review (incremented votes)", () => {
+    return request(app)
+      .patch("/api/reviews/3")
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then((response) => {
+        const { review } = response.body;
+        expect(review).toEqual({
+          title: "Ultimate Werewolf",
+          designer: "Akihisa Okui",
+          owner: "bainesface",
+          review_img_url:
+            "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          review_body: "We couldn't find the werewolf!",
+          category: "social deduction",
+          created_at: JSON.parse(JSON.stringify(new Date(1610964101251))),
+          votes: 15,
+          review_id: 3,
+        });
+      });
+  });
+  test("Patch - status: 200 - respond with updated review (decremented votes)", () => {
+    return request(app)
+      .patch("/api/reviews/12")
+      .send({ inc_votes: -50 })
+      .expect(200)
+      .then((response) => {
+        const { review } = response.body;
+        expect(review).toEqual({
+          title: "Scythe; you're gonna need a bigger table!",
+          designer: "Jamey Stegmaier",
+          owner: "mallionaire",
+          review_img_url:
+            "https://images.pexels.com/photos/4200740/pexels-photo-4200740.jpeg?w=700&h=700",
+          review_body:
+            "Spend 30 minutes just setting up all of the boards (!) meeple and decks, just to forget how to play. Scythe can be a lengthy game but really packs a punch if you put the time in. With beautiful artwork, countless scenarios and clever game mechanics, this board game is a must for any board game fanatic; just make sure you explain ALL the rules before you start playing with first timers or you may find they bring it up again and again.",
+          category: "social deduction",
+          created_at: JSON.parse(JSON.stringify(new Date(1611311824839))),
+          votes: 50,
+          review_id: 12,
+        });
+      });
+  });
+  test("Patch - status: 404 - responds with review not found", () => {
+    return request(app)
+      .patch("/api/reviews/25")
+      .send({ inc_votes: 10 })
+      .expect(404)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Review not found");
+      });
+  });
+  test("Patch - status: 400 - responds with invalid request", () => {
+    return request(app)
+      .patch("/api/reviews/morestuff")
+      .send({ inc_votes: 10 })
+      .expect(400)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid request");
+      });
+  });
+  test("Patch - status: 400 - responds with invalid format (property value)", () => {
+    return request(app)
+      .patch("/api/reviews/5")
+      .send({ inc_votes: 'evenmorestuff' })
+      .expect(403)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid format");
+      });
+  });
+  test("Patch - status: 400 - responds with invalid request (property key)", () => {
+    return request(app)
+      .patch("/api/reviews/5")
+      .send({ inc_vo: 25 })
+      .expect(403)
+      .then((response) => {
+        const { msg } = response.body;
+        expect(msg).toBe("Invalid format");
+      });
+  });
+
 });
 
 describe("/api/comments/:comment_id", () => {
