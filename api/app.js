@@ -1,39 +1,23 @@
 const express = require("express");
 const app = express();
-const {
-  getCategories,
-  getApi,
-} = require("./controllers/categories.controller");
-const {
-  getReview,
-  getReviews,
-  getReviewComments,
-  postReviewComment,
-  patchReview,
-  deleteComment,
-} = require("./controllers/reviews.controller");
+const apiRouter = require("./routes/api-router");
+const categoriesRouter = require("./routes/categories-router");
+const reviewsRouter = require("./routes/reviews-router");
+const usersRouter = require("./routes/users-router");
+const commentsRouter = require("./routes/comments-router");
 
-const { getUsers } = require("./controllers/users.controller");
 
 app.use(express.json());
 
-app.get("/api/categories", getCategories);
+app.use("/api", apiRouter);
 
-app.get("/api", getApi);
+app.use("/api/categories", categoriesRouter);
 
-app.get("/api/reviews/:review_id", getReview);
+app.use("/api/reviews", reviewsRouter);
 
-app.get("/api/reviews", getReviews);
+app.use("/api/users", usersRouter);
 
-app.get("/api/reviews/:review_id/comments", getReviewComments);
-
-app.get("/api/users", getUsers);
-
-app.post("/api/reviews/:review_id/comments", postReviewComment);
-
-app.patch("/api/reviews/:review_id", patchReview);
-
-app.delete("/api/comments/:comment_id", deleteComment);
+app.use("/api/comments", commentsRouter);
 
 app.use((err, request, response, next) => {
   if (err.code === "22P02") {
